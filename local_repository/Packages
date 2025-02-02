@@ -1,0 +1,77 @@
+Package: network-manager-applet
+Version: 1.36.0-3
+Architecture: amd64
+Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@lists.alioth.debian.org>
+Installed-Size: 284
+Depends: libatk1.0-0 (>= 1.12.4), libayatana-appindicator3-1 (>= 0.4.90), libc6 (>= 2.34), libcairo2 (>= 1.2.4), libgdk-pixbuf-2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.40), libgtk-3-0 (>= 3.10), libmm-glib0 (>= 0.7.991), libnm0 (>= 1.16.0), libnma0 (>= 1.8.28), libpango-1.0-0 (>= 1.14.0), libpangocairo-1.0-0 (>= 1.14.0), libsecret-1-0 (>= 0.18), dconf-gsettings-backend | gsettings-backend, nm-connection-editor (= 1.36.0-3), network-manager, policykit-1-gnome | polkit-1-auth-agent, default-dbus-session-bus | dbus-session-bus
+Recommends: notification-daemon, gnome-keyring, gnome-icon-theme, mobile-broadband-provider-info, iso-codes
+Suggests: network-manager-openconnect-gnome, network-manager-openvpn-gnome, network-manager-vpnc-gnome, network-manager-pptp-gnome
+Breaks: network-manager-gnome (<< 1.36.0-3~)
+Replaces: network-manager-gnome (<< 1.36.0-3~)
+Filename: ./network-manager-applet_1.36.0-3_amd64.deb
+Size: 84096
+MD5sum: df8cb7e1b1322ca7c3a88a1da4652530
+SHA1: ba42692952e89a5a637eb3cc8ff4afb4e3d05ab2
+SHA256: aceb9f3edf02ffb82939a296a1e9c198b4a72237ab524001793644a22cceb980
+Section: gnome
+Priority: optional
+Homepage: https://networkmanager.dev
+Description: network management framework (notification area applet)
+ NetworkManager is a system network service that manages your network devices
+ and connections, attempting to keep active network connectivity when
+ available. It manages ethernet, Wi-Fi, mobile broadband (WWAN), and PPPoE
+ devices, and provides VPN integration with a variety of different VPN
+ services.
+ .
+ This package contains nm-applet which is a GTK‐based GUI applet to monitor
+ network status and devices and allows users to start and stop network
+ connections managed by NetworkManager.
+
+Package: nm-connection-editor
+Source: network-manager-applet
+Version: 1.36.0-3
+Architecture: amd64
+Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@lists.alioth.debian.org>
+Installed-Size: 5343
+Depends: libc6 (>= 2.34), libglib2.0-0 (>= 2.43.2), libgtk-3-0 (>= 3.21.6), libjansson4 (>= 2.14), libnm0 (>= 1.40.0), libnma0 (>= 1.8.36), libselinux1 (>= 3.1~), network-manager, policykit-1-gnome | polkit-1-auth-agent, default-dbus-session-bus | dbus-session-bus
+Breaks: network-manager-gnome (<< 1.36.0-3~)
+Replaces: network-manager-gnome (<< 1.36.0-3~)
+Filename: ./nm-connection-editor_1.36.0-3_amd64.deb
+Size: 827072
+MD5sum: 270c5c02702e2033893ef290db4a735e
+SHA1: f324d265803e2d0294e4b224f7c5c4fd04e36a56
+SHA256: 2c0cdc3675c9631884e0b0cb796f06a8eb32f0d22d6f888bd1c1cba8f5f684c4
+Section: gnome
+Priority: optional
+Homepage: https://networkmanager.dev
+Description: network management framework (connection configuration editor)
+ NetworkManager is a system network service that manages your network devices
+ and connections, attempting to keep active network connectivity when
+ available. It manages ethernet, Wi-Fi, mobile broadband (WWAN), and PPPoE
+ devices, and provides VPN integration with a variety of different VPN
+ services.
+ .
+ This package contains nm-connection-editor which allows users to edit
+ NetworkManager connection settings.
+
+Package: python3-nwg-panel
+Source: nwg-panel
+Version: 0.9.62-1
+Architecture: all
+Maintainer: Simon Heise <simonheise@TrekstorDebian>
+Installed-Size: 2064
+Depends: python3-gi, python3:any
+Suggests: python-nwg-panel-doc
+Filename: ./python3-nwg-panel_0.9.62-1_all.deb
+Size: 158216
+MD5sum: 2006c481943a4fca5a6ee3a763db8d62
+SHA1: 7df369c82d37b91e1aa9f48f64c57bcc534ff7c3
+SHA256: e68200fdb97cb06548fe0f0fd52bf22f076673c6bf23fe1e4f70b095291299ea
+Section: unknown
+Priority: optional
+Homepage: <insert the upstream URL, if relevant>
+Description: <insert up to 60 chars description> (Python 3)
+ <Insert long description, indented with spaces.>
+ .
+ This package installs the library for Python 3.
+
