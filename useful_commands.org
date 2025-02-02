@@ -1,0 +1,3 @@
+* Find all manually installed packages
+read all packages that were installed with apt install, sort and remove duplicates
+zcat /var/log/apt/history.log.*.gz | cat /var/log/apt/history.log | grep "apt install" | sed 's/^Commandline: apt install //' | tr ' ' '\n' | sort | uniq
