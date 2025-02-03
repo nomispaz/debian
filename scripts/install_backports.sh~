@@ -1,0 +1,2 @@
+#!/bin/bash
+apt -t $1-backports install emacs

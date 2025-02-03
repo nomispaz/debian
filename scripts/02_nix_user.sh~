@@ -1,0 +1,5 @@
+#!/bin/bash
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl
+
+nix-channel --update
