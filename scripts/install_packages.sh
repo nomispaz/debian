@@ -3,7 +3,17 @@
 apt install alacritty fish
 
 # tools
-apt install linux-cpupower htop
+apt install linux-cpupower htop screenfetch
+
+# debian dev tools
+apt install debmake dh-make
+
+# security
+apt install clamav apparmor-profiles
+
+# virtualisation
+apt install virt-manager
+/usr/sbin/usermod -aG libvirt simonheise
 
 # editors
 apt install neovim emacs elpa-consult elpa-company elpa-go-mode elpa-rust-mode elpa-evil elpa-yasnippet elpa-yasnippet-snippets
@@ -15,7 +25,7 @@ apt install dunst brightnessctl wireplumber gammastep grim rofi slurp wl-clipboa
 apt install sway swaybg python3-dbus-next python3-i3ipc
 
 # install from personal repo
-apt install python3-nwg-panel network-manager-applet
+apt install python3-nwg-panel network-manager-applet emacs-catppuccin
 
 # dependencies for nwg-panel
 apt install git curl bluez-tools gir1.2-gtklayershell-0.1 libgtk-3-0 pulseaudio-utils gir1.2-dbusmenu-gtk3-0.4 gir1.2-playerctl-2.0 playerctl python3-dasbus python3-gi-cairo python3-i3ipc python3-netifaces python3-psutil python3-requests python3-setuptools python3-wheel sway-notification-center

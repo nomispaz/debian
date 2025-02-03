@@ -1,3 +1,23 @@
 * Find all manually installed packages
 read all packages that were installed with apt install, sort and remove duplicates
 zcat /var/log/apt/history.log.*.gz | cat /var/log/apt/history.log | grep "apt install" | sed 's/^Commandline: apt install //' | tr ' ' '\n' | sort | uniq
+* create local repository
+- https://wiki.debianforum.de/Lokales_Repository
+mkdir -p ~/git_repos/debian/local_repository/bookworm
+
+- add repository to /etc/apt/sources.list
+  # personal repository
+deb [ trusted=yes ] file:///home/simonheise/git_repos/debian/local_repository/bookworm ./
+
+ - recreate package-index everytime a package is added or updated in the last folder (in this case bookworm)
+   dpkg-scanpackages ./ > Packages && gzip -k -f Packages
+* create new packages
+https://wiki.debian.org/SimplePackagingTutorial
+** I only need to copy files to destination (e.g. emacs-catppuccin)
+- create emacs-catppuccin.install file in debian/ folder of the sources and insert:
+*.el /usr/share/emacs/site-lisp/elpa/catppuccin-theme
+- then build the package
+* create backports
+https://wiki.debian.org/SimpleBackportCreation
+* list contents of a deb-package
+dpkg -c package_file.deb
