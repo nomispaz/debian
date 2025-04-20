@@ -1,1 +1,2 @@
-
+* Veracrypt
+Install manually from https://www.veracrypt.fr/en/Downloads.html

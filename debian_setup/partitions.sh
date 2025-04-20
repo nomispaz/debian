@@ -53,7 +53,8 @@ mkdir -p /target/boot/efi
 mount /dev/$efiDrive /target/boot/efi
 
 echo "write fstab file"
-rootDrive=$(blkid -s UUID -o value /dev/$rootDev)
+rootDrive=$(blkid -s UUID -o value /dev/$rootDrive)
+mkdir -p /target/etc
 echo "UUID=$rootDrive / btrfs defaults,noatime,compress=zstd,subvol=root 0 0" >> /target/etc/fstab
 echo "UUID=$rootDrive /home btrfs defaults,noatime,compress=zstd,subvol=home 0 0" >> /target/etc/fstab
 echo "UUID=$rootDrive /data btrfs defaults,noatime,compress=zstd,subvol=data 0 0" >> /target/etc/fstab
