@@ -1,2 +1,9 @@
 echo "vm.max_map_count=1048576" > /etc/sysctl.d/99-max_map_count.conf
 # add nvidia-drm.modeset=1 security=apparmor amd_pstate=active to /etc/default/grub GRUB:CMDLINE_LINUX_DEFAULT
+
+
+
+
+# neuer versuch
+visudo /etc/sudoers
+# add: Defaults targetpw

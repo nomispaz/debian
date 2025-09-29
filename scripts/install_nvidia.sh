@@ -7,10 +7,10 @@ echo 'deb [signed-by=/usr/share/keyrings/nvidia-drivers.gpg] https://developer.d
 sudo apt update
 
 #install nvidia
-sudo apt install nvidia-open nvidia-prime
+sudo apt install nvidia-kernel-open-dkms nvidia-prime nvidia-driver-cuda
 
 # libwlroots from personal repo
-sudo apt install libwlroots10
+#sudo apt install libwlroots
 
 # setup nvidia to be used by podman
 sudo apt install nvidia-container-toolkit

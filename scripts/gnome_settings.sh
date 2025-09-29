@@ -1,4 +1,3 @@
-#!/bin/bash
 #change formats to German
 gsettings set org.gnome.system.locale region 'de_DE.UTF-8'
 #activate tap-to-click
@@ -59,6 +58,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 #start steam client
 # change Super+s
 gsettings set org.gnome.shell.keybindings toggle-overview '@as []'
+gsettings set org.gnome.shell.keybindings toggle-quick-settings '@as []'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/ name 'steam'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/ command 'steam'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/ binding '<Super>s'

@@ -7,6 +7,9 @@ curl -fsSL https://download.opensuse.org/repositories/home:nomispaz:debian/Debia
 echo 'deb http://download.opensuse.org/repositories/home:/nomispaz:/debian:/kernel/Debian_13/ /' | sudo tee /etc/apt/sources.list.d/home:nomispaz:debian:kernel.list
 curl -fsSL https://download.opensuse.org/repositories/home:nomispaz:debian:kernel/Debian_13/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_nomispaz_debian_kernel.gpg > /dev/null
 
+echo 'deb http://download.opensuse.org/repositories/home:/nomispaz:/debian:/emacs/Debian_13/ /' | sudo tee /etc/apt/sources.list.d/home:nomispaz:debian:emacs.list
+curl -fsSL https://download.opensuse.org/repositories/home:nomispaz:debian:emacs/Debian_13/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_nomispaz_debian_emacs.gpg > /dev/null
+
 # add brave repository
 sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
@@ -18,7 +21,7 @@ sudo apt update
 sudo apt install alacritty fish
 
 # tools
-sudo apt install linux-cpupower htop screenfetch keepassxc
+sudo apt install linux-cpupower htop screenfetch keepassxc vlc obs-studio meld blueman gparted
 
 # debian dev tools
 sudo apt install debmake dh-make
@@ -41,7 +44,7 @@ sudo apt install fonts-font-awesome fonts-dejavu
 sudo apt install calibre thunderbird
 
 #install windowmanager tools
-sudo apt install dunst brightnessctl wireplumber gammastep grim rofi slurp wl-clipboard network-manager-gnome
+sudo apt install dunst brightnessctl wireplumber gammastep grim rofi slurp wl-clipboard network-manager-gnome pavucontrol
 
 # install sway
 sudo apt install sway swaybg python3-dbus-next python3-i3ipc
@@ -56,3 +59,38 @@ apt install git curl bluez-tools gir1.2-gtklayershell-0.1 libgtk-3-0 pulseaudio-
 # install brave
 sudo apt install brave-browser
 
+# install dkms for nvidia
+sudo apt install dkms
+
+# flatpak
+sudo apt install flatpak
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+###################################
+#Note that the directories
+
+#'/var/lib/flatpak/exports/share'
+#'/home/simonheise/.local/share/flatpak/exports/share'
+
+#are not in the search path set by the XDG_DATA_DIRS environment variable, so
+#applications installed by Flatpak may not appear on your desktop until the
+#session is restarted.
+###################################
+flatpak install flathub com.usebottles.bottles
+flatpak install flathub com.github.tchx84.Flatseal
+# flatpak run com.usebottles.bottles
+# flatpak run com.github.tchx84.Flatseal
+#
+
+# programming
+sudo apt install rustup golang gopls elixir elixir-ls erlang default-jdk jdtls maven gradle
+rustup default stable
+rustup component add rust-analyzer rust-src
+
+# osc as a cli for opensuse buildservice
+sudo apt install osc
+
+# cosmic desktop
+sudo apt install cosmic-comp cosmic-launcher cosmic-panel cosmic-session cosmic-settings cosmic-applets
+
+# niri and cosmic integration
+sudo apt install niri xwayland-satellite cosmic-ext-extra-session
