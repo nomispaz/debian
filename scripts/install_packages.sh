@@ -21,7 +21,7 @@ sudo apt update
 sudo apt install alacritty fish
 
 # tools
-sudo apt install linux-cpupower htop screenfetch keepassxc vlc obs-studio meld blueman gparted
+sudo apt install linux-cpupower htop fastfetch keepassxc vlc obs-studio meld blueman gparted
 
 # debian dev tools
 sudo apt install debmake dh-make
