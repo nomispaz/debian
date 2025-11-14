@@ -26,11 +26,11 @@ mkdir -p /mnt/boot
 mkdir -p /mnt/etc
 mkdir -p /mnt/var
 
-mkdir -p $DEPLOY/{dev,proc,sys,boot/efi}
-mount --bind /dev $DEPLOY/dev
-mount --bind /proc $DEPLOY/proc
-mount --bind /sys $DEPLOY/sys
-mount --bind /mnt/boot/efi $DEPLOY/boot/efi
+mkdir -p $BUILD/{dev,proc,sys,boot/efi}
+mount --bind /dev $BUILD/dev
+mount --bind /proc $BUILD/proc
+mount --bind /sys $BUILD/sys
+mount --bind /mnt/boot/efi $BUILD/boot/efi
 
 #cat > $BUILD/etc/apt/sources.list <<EOF
 #deb http://deb.debian.org/debian sid main contrib non-free-firmware
@@ -40,6 +40,6 @@ cp /etc/resolv.conf $BUILD/etc/
 
 cp chroot.sh /mnt
 
-chroot $DEPLOY
+chroot $BUILD
 
 
