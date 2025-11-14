@@ -32,6 +32,8 @@ echo "[*] Bootstrapping Debian Sid..."
 rm -rf "$BUILDROOT"
 mkdir -p "$BUILDROOT"
 
+apt install -y debootstrap linux-image-amd64 dracut grub-efi-amd64
+
 debootstrap --variant=minbase "$BRANCH_NAME" "$BUILDROOT" "$DEBIAN_MIRROR"
 
 # =========================================
@@ -39,7 +41,6 @@ debootstrap --variant=minbase "$BRANCH_NAME" "$BUILDROOT" "$DEBIAN_MIRROR"
 # =========================================
 cat > "$BUILDROOT/etc/apt/sources.list" <<EOF
 deb $DEBIAN_MIRROR $BRANCH_NAME main contrib non-free-firmware
-deb $DEBIAN_MIRROR-security $BRANCH_NAME-security main contrib non-free-firmware
 EOF
 
 # =========================================
