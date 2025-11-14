@@ -38,14 +38,20 @@ ostree --repo=/mnt/ostree/repo commit \
 
 ostree admin --sysroot=/mnt os-init debian
 
-mkdir -p $DEPLOY/{dev,proc,sys,boot}
+mkdir -p $DEPLOY/{dev,proc,sys,boot/efi}
 mount --bind /dev $DEPLOY/dev
 mount --bind /proc $DEPLOY/proc
 mount --bind /sys $DEPLOY/sys
-mount --bind /mnt/boot $DEPLOY/boot
+mount --bind /mnt/boot/efi $DEPLOY/boot/efi
+
+cat > $BUILD/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian sid main contrib non-free-firmware
+EOF
+
+cp /etc/resolv.conf $BUILD/etc/
 
 cp chroot.sh /mnt
 
-chroot $DEPLOY /bin/bash
+chroot $DEPLOY
 
 
