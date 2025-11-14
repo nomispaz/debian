@@ -32,7 +32,7 @@ echo "[*] Bootstrapping Debian Sid..."
 rm -rf "$BUILDROOT"
 mkdir -p "$BUILDROOT"
 
-apt install -y debootstrap linux-image-amd64 dracut grub-efi-amd64
+apt install -y debootstrap linux-image-amd64 dracut grub-efi-amd64 ostree
 
 debootstrap --variant=minbase "$BRANCH_NAME" "$BUILDROOT" "$DEBIAN_MIRROR"
 
@@ -97,6 +97,36 @@ ostree --repo="$MOUNTPOINT/ostree/repo" init --mode=bare
 # =========================================
 # 10) Commit build root into OSTree
 # =========================================
+#
+echo "[*] Fixing kernel layout for OSTree..."
+
+ROOT="$BUILDROOT"
+
+# Detect kernel version directory in lib/modules
+KVER=$(basename "$ROOT"/lib/modules/*)
+
+# Create OSTree kernel directory
+mkdir -p "$ROOT/usr/lib/modules/$KVER"
+
+# Move/copy kernel + initramfs to the OSTree-compliant location
+if ls "$ROOT/boot/vmlinuz-"* >/dev/null 2>&1; then
+    cp "$ROOT"/boot/vmlinuz-* "$ROOT/usr/lib/modules/$KVER/vmlinuz"
+else
+    echo "ERROR: Kernel image not found under $ROOT/boot/"
+    exit 1
+fi
+
+if ls "$ROOT/boot/initrd.img-"* >/dev/null 2>&1; then
+    cp "$ROOT"/boot/initrd.img-* "$ROOT/usr/lib/modules/$KVER/initramfs.img"
+else
+    echo "ERROR: initrd image not found under $ROOT/boot/"
+    exit 1
+fi
+
+# Clean out /boot to avoid conflicts
+rm -f "$ROOT"/boot/vmlinuz-* "$ROOT"/boot/initrd.img-*
+
+
 echo "[*] Committing build root to OSTree..."
 ostree --repo="$MOUNTPOINT/ostree/repo" commit \
     --branch="$BRANCH_NAME" \
@@ -106,7 +136,7 @@ ostree --repo="$MOUNTPOINT/ostree/repo" commit \
 # 11) Initialize sysroot and OS stateroot
 # =========================================
 echo "[*] Initializing sysroot and OS..."
-ostree admin --sysroot="$MOUNTPOINT" init-fs --modern
+#ostree admin --sysroot="$MOUNTPOINT" init-fs --modern
 ostree admin --sysroot="$MOUNTPOINT" os-init "$OS_NAME"
 
 # =========================================
