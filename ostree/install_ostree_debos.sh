@@ -13,7 +13,6 @@ BUILDROOT="/tmp/debos-buildroot"
 DEBOS_YAML="debian-ostree.yaml"
 OS_NAME="debian"
 BRANCH_NAME="sid"
-DEBIAN_MIRROR="http://deb.debian.org/debian"
 
 # =========================================
 # 0) Safety check
@@ -28,10 +27,10 @@ fi
 # 1) Partition disk: EFI + root
 # =========================================
 echo "[*] Creating GPT partition table..."
-parted /dev/$TARGET_DISK mklabel gpt
-parted /dev/$TARGET_DISK mkpart ESP fat32 1MiB 513MiB
-parted /dev/$TARGET_DISK set 1 esp on
-parted /dev/$TARGET_DISK mkpart primary ext4 513MiB 100%
+parted $TARGET_DISK mklabel gpt
+parted $TARGET_DISK mkpart ESP fat32 1MiB 513MiB
+parted $TARGET_DISK set 1 esp on
+parted $TARGET_DISK mkpart primary ext4 513MiB 100%
 
 EFI_PART="${TARGET_DISK}1"
 ROOT_PART="${TARGET_DISK}2"
@@ -61,7 +60,14 @@ if [[ ! -f "$DEBOS_YAML" ]]; then
     exit 1
 fi
 
-debos -c "$DEBOS_YAML" -d "$BUILDROOT"
+apt install -y debos
+
+debos "$DEBOS_YAML"
+
+# Debos produces /tmp/debian-ostree.img; extract to BUILDROOT
+rm -rf "$BUILDROOT"
+mkdir -p "$BUILDROOT"
+bsdtar -C "$BUILDROOT" -xf /tmp/debian-ostree.img
 
 # =========================================
 # 4) Initialize OSTree repository
