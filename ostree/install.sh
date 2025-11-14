@@ -36,6 +36,7 @@ ostree --repo=/mnt/ostree/repo commit \
     --subject="Debian sid base" \
     $BUILD
 
+ostree admin --sysroot=/mnt os-init debian
 
 ostree admin --sysroot=/mnt deploy --os=debian debian/sid
 
