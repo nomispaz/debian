@@ -34,11 +34,21 @@ fi
 
 # --- 1) partition and format (GPT, 1: EFI, 2: root) ---
 echo "[1/14] Partitioning $TARGET_DISK..."
-sgdisk -Z "$TARGET_DISK"
-sgdisk -n1:2048:+$EFI_SIZE -t1:EF00 -c1:"EFI System" "$TARGET_DISK"
-sgdisk -n2:0:0 -t2:8300 -c2:"Linux Root" "$TARGET_DISK"
+parted $TARGET_DISK mklabel gpt
+parted $TARGET_DISK mkpart ESP fat32 1MiB 513MiB
+parted $TARGET_DISK set 1 esp on
+parted $TARGET_DISK mkpart primary ext4 513MiB 100%
+
 EFI_PART="${TARGET_DISK}1"
 ROOT_PART="${TARGET_DISK}2"
+
+mkfs.fat -F32 $EFI_PART
+mkfs.ext4 $ROOT_PART
+
+mount $ROOT_PART /mnt
+mkdir -p /mnt/boot/efi
+mount $EFI_PART /mnt/boot/efi
+
 
 echo "[2/14] Formatting partitions..."
 mkfs.vfat -F32 "$EFI_PART"
@@ -60,7 +70,7 @@ echo "[4/14] Bootstrapping Debian sid into $BUILDROOT..."
 rm -rf "$BUILDROOT"
 mkdir -p "$BUILDROOT"
 
-apt install -y debootstrap ostree
+sudo apt install -y debootstrap ostree dracut grub-efi-amd64
 
 debootstrap --variant=minbase sid "$BUILDROOT" "$DEBIAN_MIRROR"
 
