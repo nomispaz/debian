@@ -73,7 +73,6 @@ debootstrap --variant=minbase sid "$BUILDROOT" "$DEBIAN_MIRROR"
 echo "[5/14] Preparing apt sources and DNS for chroot..."
 cat > "$BUILDROOT/etc/apt/sources.list" <<EOF
 deb $DEBIAN_MIRROR sid main contrib non-free-firmware
-deb http://security.debian.org/ sid-security main contrib non-free-firmware
 EOF
 
 # copy host resolv.conf so DNS works in chroot
