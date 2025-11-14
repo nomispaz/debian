@@ -101,7 +101,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt update
 # install kernel, dracut and basic tools; you can add packages here
-apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg
+apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg grub-efi-amd64 grub-common
 "
 
 # --- 7) run dracut inside buildroot to produce initramfs (works because kernel installed and /dev/proc mounted) ---
@@ -177,10 +177,21 @@ fi
 # remove boot artifacts to avoid confusion (but keep /boot directory)
 rm -f "$ROOT"/boot/vmlinuz-* "$ROOT"/boot/initrd.img-* "$ROOT"/boot/initramfs-*
 
+# --- 13) generate grub.cfg inside buildroot ---
+mkdir -p "$ROOT/boot/grub"
+chroot "$ROOT" /bin/bash -c "
+set -e
+grub-mkconfig -o /boot/grub/grub.cfg
+"
+
+# copy grub.cfg to deployed root
+cp "$ROOT/boot/grub/grub.cfg" "$MOUNTPOINT/boot/grub/grub.cfg"
+
 # --- 12) initialize OSTree repo and commit the buildroot ---
 echo "[13/14] Initializing OSTree repository and committing..."
 mkdir -p "$OSTREE_REPO"
 ostree --repo="$OSTREE_REPO" init --mode=archive-z2
+
 
 # commit branch
 ostree --repo="$OSTREE_REPO" commit --branch="$BRANCH_NAME" \
@@ -189,14 +200,20 @@ ostree --repo="$OSTREE_REPO" commit --branch="$BRANCH_NAME" \
 
 # --- 13) init-fs, os-init and deploy (on target sysroot) ---
 echo "[14/14] Initializing sysroot, stateroot and deploying..."
-ostree admin --sysroot="$MOUNTPOINT" init-fs --modern
+mkdir $MOUNTPOINT/ostree/deploy
 ostree admin --sysroot="$MOUNTPOINT" os-init "$OS_NAME"
 ostree admin --sysroot="$MOUNTPOINT" deploy --os="$OS_NAME" "$BRANCH_NAME"
 
 # --- Install GRUB from the host (do not chroot into deployment) ---
 echo "[15/15] Installing GRUB to the EFI partition and generating config..."
 # install the UEFI bootloader into ESP mounted at $MOUNTPOINT/boot/efi
-grub-install --target=x86_64-efi --efi-directory="$MOUNTPOINT/boot/efi" --bootloader-id=debian --recheck || true
+grub-install \
+  --target=x86_64-efi \
+  --efi-directory="$MOUNTPOINT/boot/efi" \
+  --boot-directory="$MOUNTPOINT/boot" \
+  --bootloader-id=debian \
+  --no-nvram \
+  --removable
 
 # generate grub.cfg from host, pointing to /mnt as root
 grub-mkconfig -o "$MOUNTPOINT/boot/grub/grub.cfg"
