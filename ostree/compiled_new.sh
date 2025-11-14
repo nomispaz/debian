@@ -45,11 +45,6 @@ ROOT_PART="${TARGET_DISK}2"
 mkfs.fat -F32 $EFI_PART
 mkfs.ext4 $ROOT_PART
 
-mount $ROOT_PART /mnt
-mkdir -p /mnt/boot/efi
-mount $EFI_PART /mnt/boot/efi
-
-
 echo "[2/14] Formatting partitions..."
 mkfs.vfat -F32 "$EFI_PART"
 mkfs.${ROOT_FS_TYPE} -F "$ROOT_PART"
