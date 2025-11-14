@@ -101,7 +101,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt update
 # install kernel, dracut and basic tools; you can add packages here
-apt install -y --no-install-recommends linux-image-amd64 dracut-sysv sudo gnupg
+apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg
 "
 
 # --- 7) run dracut inside buildroot to produce initramfs (works because kernel installed and /dev/proc mounted) ---
