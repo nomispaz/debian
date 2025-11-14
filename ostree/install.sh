@@ -1,0 +1,40 @@
+parted /dev/vda mklabel gpt
+parted /dev/vda mkpart ESP fat32 1MiB 513MiB
+parted /dev/vda set 1 esp on
+parted /dev/vda mkpart primary ext4 513MiB 100%
+
+mkfs.fat -F32 /dev/vda1
+mkfs.ext4 /dev/vda2
+
+mount /dev/vda2 /mnt
+mkdir -p /mnt/boot/efi
+mount /dev/vda1 /mnt/boot/efi
+
+sudo apt install -y debootstrap ostree dracut grub-efi-amd64
+
+ostree --repo=/mnt/ostree/repo init --mode=bare
+
+BUILD=/tmp/debian-buildroot
+mkdir -p $BUILD
+debootstrap --variant=minbase sid $BUILD http://deb.debian.org/debian
+
+mkdir -p $BUILD/usr
+mv $BUILD/etc $BUILD/usr/etc
+
+ostree --repo=/mnt/ostree/repo commit \
+    --branch=debian/sid \
+    --subject="Debian sid base" \
+    $BUILD
+
+ostree admin --sysroot=/mnt deploy --os=debian debian/sid
+
+DEPLOY=/mnt/ostree/deploy/debian/deploy/$(ostree admin --sysroot=/mnt status | awk '/sid/ {print $2}')
+mount --bind /dev $DEPLOY/dev
+mount --bind /proc $DEPLOY/proc
+mount --bind /sys $DEPLOY/sys
+mount --bind /mnt/boot $DEPLOY/boot
+
+cp chroot.sh /mnt
+
+chroot $DEPLOY /bin/bash
+
