@@ -1,0 +1,44 @@
+# =========================================
+# Debian Sid OSTree image
+# =========================================
+# Use amd64 architecture
+image:
+  name: debian-ostree
+  arch: amd64
+  format: raw
+  size: 0
+
+# Base packages
+packages:
+  - linux-image-amd64
+  - dracut
+  - sudo
+  - systemd
+  - ostree
+  - gnupg
+
+# Use existing host apt cache
+apt:
+  cache: /var/cache/apt/archives
+
+# File operations
+file-operations:
+  - move:
+      from: /etc
+      to: /usr/etc
+
+# Cleanup ephemeral files for OSTree
+cleanup:
+  - path: /dev
+  - path: /proc
+  - path: /sys
+  - path: /run
+  - path: /tmp
+
+# Optional hooks: can generate initramfs here, but we'll do in deployed root
+hooks:
+  - name: "ensure dracut works"
+    script: |
+      set -e
+      echo "Dracut installed"
+
