@@ -22,6 +22,9 @@ debootstrap --variant=minbase sid $BUILD http://deb.debian.org/debian
 mkdir -p $BUILD/usr
 mv $BUILD/etc $BUILD/usr/etc
 
+# OSTree does not accept device nodes, sockets, or special files
+rm -rf "$BUILD"/{dev,proc,sys,run,tmp,var/tmp,mnt,media,swapfile,lost+found}
+
 ostree --repo=/mnt/ostree/repo commit \
     --branch=debian/sid \
     --subject="Debian sid base" \
