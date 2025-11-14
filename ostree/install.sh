@@ -12,6 +12,7 @@ mount /dev/vda1 /mnt/boot/efi
 
 sudo apt install -y debootstrap ostree dracut grub-efi-amd64
 
+mkdir -p /mnt/ostree/repo
 ostree --repo=/mnt/ostree/repo init --mode=bare
 
 BUILD=/tmp/debian-buildroot
