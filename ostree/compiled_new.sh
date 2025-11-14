@@ -215,8 +215,5 @@ grub-install \
   --no-nvram \
   --removable
 
-# generate grub.cfg from host, pointing to /mnt as root
-grub-mkconfig -o "$MOUNTPOINT/boot/grub/grub.cfg"
-
 echo "Done. Reboot. Select the OSTree deployment in your bootloader."
 
