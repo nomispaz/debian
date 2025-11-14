@@ -38,9 +38,7 @@ ostree --repo=/mnt/ostree/repo commit \
 
 ostree admin --sysroot=/mnt os-init debian
 
-ostree admin --sysroot=/mnt deploy --os=debian debian/sid
-
-DEPLOY=/mnt/ostree/deploy/debian/deploy/$(ostree admin --sysroot=/mnt status | awk '/sid/ {print $2}')
+mkdir -p $DEPLOY/{dev,proc,sys,boot}
 mount --bind /dev $DEPLOY/dev
 mount --bind /proc $DEPLOY/proc
 mount --bind /sys $DEPLOY/sys
@@ -49,4 +47,5 @@ mount --bind /mnt/boot $DEPLOY/boot
 cp chroot.sh /mnt
 
 chroot $DEPLOY /bin/bash
+
 
