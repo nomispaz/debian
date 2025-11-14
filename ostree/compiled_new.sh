@@ -60,6 +60,8 @@ echo "[4/14] Bootstrapping Debian sid into $BUILDROOT..."
 rm -rf "$BUILDROOT"
 mkdir -p "$BUILDROOT"
 
+apt install -y debootstrap ostree
+
 debootstrap --variant=minbase sid "$BUILDROOT" "$DEBIAN_MIRROR"
 
 # --- 4) prepare apt sources & copy resolv.conf so apt works in chroot ---
