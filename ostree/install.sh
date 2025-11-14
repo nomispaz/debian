@@ -25,15 +25,17 @@ mv $BUILD/etc $BUILD/usr/etc
 # OSTree does not accept device nodes, sockets, or special files
 rm -rf "$BUILD"/{dev,proc,sys,run,tmp,var/tmp,mnt,media,swapfile,lost+found}
 
+mkdir -p /mnt/ostree/repo
+mkdir -p /mnt/ostree/deploy
+mkdir -p /mnt/boot
+mkdir -p /mnt/etc
+mkdir -p /mnt/var
+
 ostree --repo=/mnt/ostree/repo commit \
     --branch=debian/sid \
     --subject="Debian sid base" \
     $BUILD
 
-mkdir -p /mnt/ostree/repo
-mkdir -p /mnt/boot
-mkdir -p /mnt/etc
-mkdir -p /mnt/var
 
 ostree admin --sysroot=/mnt deploy --os=debian debian/sid
 
