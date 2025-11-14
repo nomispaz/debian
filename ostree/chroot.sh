@@ -25,6 +25,3 @@ EOF
 chmod +x /etc/grub.d/42_ostree
 
 grub-mkconfig -o /boot/grub/grub.cfg
-
-exit
-
