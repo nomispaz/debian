@@ -56,7 +56,7 @@ mkdir -p "$MOUNTPOINT"
 mount "$ROOT_PART" "$MOUNTPOINT"
 mkdir -p "$MOUNTPOINT/boot"
 mkdir -p "$MOUNTPOINT/boot/efi"
-mount "$EFI_PART" "$MOUNTPOINT/boot/efi"
+mount "$EFI_PART" "$MOUNTPOINT/boot"
 
 mkdir -p "$BUILDROOT"
 
