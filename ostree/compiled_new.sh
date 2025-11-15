@@ -177,15 +177,15 @@ fi
 # remove boot artifacts to avoid confusion (but keep /boot directory)
 rm -f "$ROOT"/boot/vmlinuz-* "$ROOT"/boot/initrd.img-* "$ROOT"/boot/initramfs-*
 
-# --- 13) generate grub.cfg inside buildroot ---
-mkdir -p "$ROOT/boot/grub"
-chroot "$ROOT" /bin/bash -c "
-set -e
-grub-mkconfig -o /boot/grub/grub.cfg
-"
-
-# copy grub.cfg to deployed root
-cp "$ROOT/boot/grub/grub.cfg" "$MOUNTPOINT/boot/grub/grub.cfg"
+# # --- 13) generate grub.cfg inside buildroot ---
+# mkdir -p "$ROOT/boot/grub"
+# chroot "$ROOT" /bin/bash -c "
+# set -e
+# grub-mkconfig -o /boot/grub/grub.cfg
+# "
+# 
+# # copy grub.cfg to deployed root
+# cp "$ROOT/boot/grub/grub.cfg" "$MOUNTPOINT/boot/grub/grub.cfg"
 
 # --- 12) initialize OSTree repo and commit the buildroot ---
 echo "[13/14] Initializing OSTree repository and committing..."
@@ -214,6 +214,50 @@ grub-install \
   --bootloader-id=debian \
   --no-nvram \
   --removable
+
+echo "=== Generating static OSTree-compatible grub.cfg ==="
+
+# 1) Detect filesystem UUID of the root partition
+ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART")
+if [[ -z "$ROOT_UUID" ]]; then
+    echo "ERROR: Could not determine UUID of $ROOT_PART"
+    exit 1
+fi
+
+# 2) Locate deployed OSTree revision
+DEPLOY_BASE="$MOUNTPOINT/ostree/deploy/$OS_NAME/deploy"
+DEPLOY_REV=$(basename "$(find "$DEPLOY_BASE" -maxdepth 1 -type d | grep -v '\.$' | head -n1)")
+if [[ -z "$DEPLOY_REV" ]]; then
+    echo "ERROR: Could not detect deployed OSTree revision"
+    exit 1
+fi
+
+# 3) Detect kernel version inside deployment
+KVER=$(basename "$(find "$DEPLOY_BASE/$DEPLOY_REV/usr/lib/modules" -maxdepth 1 -mindepth 1 -type d | head -n 1)")
+if [[ -z "$KVER" ]]; then
+    echo "ERROR: Kernel version not found in deployment"
+    exit 1
+fi
+
+# 4) Paths to kernel + initramfs inside OSTree deployment
+KERNEL_PATH="/ostree/deploy/$OS_NAME/deploy/$DEPLOY_REV/usr/lib/modules/$KVER/vmlinuz"
+INITRD_PATH="/ostree/deploy/$OS_NAME/deploy/$DEPLOY_REV/usr/lib/modules/$KVER/initramfs.img"
+
+# 5) Create GRUB.cfg
+cat > "$MOUNTPOINT/boot/grub/grub.cfg" <<EOF
+set default=0
+set timeout=5
+
+menuentry "Debian (OSTree)" {
+    search --no-floppy --fs-uuid --set=root $ROOT_UUID
+
+    linux $KERNEL_PATH ostree=/ostree/boot.0 root=UUID=$ROOT_UUID
+    initrd $INITRD_PATH
+}
+EOF
+
+echo "OSTree-ready grub.cfg created at $MOUNTPOINT/boot/grub/grub.cfg"
+
 
 echo "Done. Reboot. Select the OSTree deployment in your bootloader."
 
