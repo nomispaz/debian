@@ -100,7 +100,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt update
 # install kernel, dracut and basic tools; you can add packages here
-apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg systemd-boot
+apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg systemd-boot ostree
 "
 
 # -------------------------
@@ -110,9 +110,9 @@ MODDIR="$BUILDROOT/usr/lib/dracut/modules.d/98ostree"
 mkdir -p "$MODDIR"
 
 wget -O "$MODDIR/module-setup.sh" \
-    https://raw.githubusercontent.com/ostreedev/ostree/main/dracut/module-setup.sh
+    https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/module-setup.sh
 wget -O "$MODDIR/ostree.conf" \
-    https://raw.githubusercontent.com/ostreedev/ostree/main/dracut/ostree.conf
+    https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/ostree.conf
 
 chmod 755 "$MODDIR/module-setup.sh"
 chmod 644 "$MODDIR/ostree.conf"
