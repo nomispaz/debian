@@ -145,6 +145,13 @@ add_dracutmodules+=" ostree "
 hostonly="no"
 EOF
 
+# --- 8) unmount buildroot virtual filesystems (prepare for cleanup) ---
+echo "[9/14] Unmounting buildroot mounts..."
+umount "$BUILDROOT/dev/pts" || true
+umount "$BUILDROOT/dev" || true
+umount "$BUILDROOT/proc" || true
+umount "$BUILDROOT/sys" || true
+
 # If we mounted apt cache, unmount it after chroot
 if mountpoint -q "$BUILDROOT/var/cache/apt/archives"; then
   umount "$BUILDROOT/var/cache/apt/archives"
