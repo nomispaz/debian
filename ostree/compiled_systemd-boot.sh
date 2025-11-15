@@ -109,15 +109,15 @@ apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg syste
 "
 
 # create dracut ostree module dir and fetch upstream files
-mkdir -p "$BUILDROOT/usr/lib/dracut/modules.d/98ostree"
-wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" \
-     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/module-setup.sh
-
-wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" \
-     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/ostree.conf
-
-chmod 755 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" || true
-chmod 644 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" || true
+#mkdir -p "$BUILDROOT/usr/lib/dracut/modules.d/98ostree"
+#wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" \
+#     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/module-setup.sh
+#
+#wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" \
+#     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/ostree.conf
+#
+#chmod 755 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" || true
+#chmod 644 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" || true
 
 # --- 7) run dracut inside buildroot to produce initramfs (works because kernel installed and /dev/proc mounted) ---
 echo "[8/14] Generating initramfs in buildroot (dracut)..."
