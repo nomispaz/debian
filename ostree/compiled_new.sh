@@ -265,7 +265,7 @@ menuentry "Debian (OSTree)" {
     search --no-floppy --fs-uuid --set=root $ROOT_UUID
 
     linux /ostree/deploy/$OS_NAME/deploy/$DEPLOY_REV/usr/lib/modules/$KVER/vmlinuz \
-          ostree=/ostree/boot.0 \
+          ostree=/ostree/boot.1 \
           rw
 
     initrd /ostree/deploy/$OS_NAME/deploy/$DEPLOY_REV/usr/lib/modules/$KVER/initramfs.img
