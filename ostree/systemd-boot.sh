@@ -16,6 +16,7 @@ ROOT_FS_TYPE="ext4"
 DEBOOTSTRAP_SUITE="sid"
 DEBOOTSTRAP_COMPONENTS="main,non-free-firmware"
 DEBOOTSTRAP_MIRROR="http://deb.debian.org/debian"
+DEBIAN_MIRROR="http://deb.debian.org/debian"
 
 # Kernel and package cache
 APT_CACHE="/var/cache/apt/archives"
