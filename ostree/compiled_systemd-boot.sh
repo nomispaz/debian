@@ -104,7 +104,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt update
 # install kernel, dracut and basic tools; you can add packages here
-apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg systemd-boot
+apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg systemd-boot ostree
 # grub/systemd-boot packages are not necessary inside buildroot for OSTree
 "
 
