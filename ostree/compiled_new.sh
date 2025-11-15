@@ -104,6 +104,15 @@ apt update
 apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg grub-efi-amd64 grub-common
 "
 
+mkdir -p $BUILDROOT/usr/lib/dracut/modules.d/98ostree
+wget https://raw.githubusercontent.com/ostreedev/ostree/main/dracut/module-setup.sh \
+     -O $BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh
+
+wget https://raw.githubusercontent.com/ostreedev/ostree/main/dracut/ostree-boot.sh \
+     -O $BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree-boot.sh
+
+chmod +x $BUILDROOT/usr/lib/dracut/modules.d/98ostree/*.sh
+
 # --- 7) run dracut inside buildroot to produce initramfs (works because kernel installed and /dev/proc mounted) ---
 echo "[8/14] Generating initramfs in buildroot (dracut)..."
 chroot "$BUILDROOT" /bin/bash -c "
