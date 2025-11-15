@@ -17,6 +17,7 @@ DEBOOTSTRAP_SUITE="sid"
 DEBOOTSTRAP_COMPONENTS="main,non-free-firmware"
 DEBOOTSTRAP_MIRROR="http://deb.debian.org/debian"
 DEBIAN_MIRROR="http://deb.debian.org/debian"
+OSTREE_REPO="$MOUNTPOINT/ostree/repo"
 
 # Kernel and package cache
 APT_CACHE="/var/cache/apt/archives"
@@ -145,6 +146,13 @@ add_dracutmodules+=" ostree "
 hostonly="no"
 EOF
 
+# --- 7) run dracut inside buildroot to produce initramfs (works because kernel installed and /dev/proc mounted) ---
+echo "[8/14] Generating initramfs in buildroot (dracut)..."
+chroot "$BUILDROOT" /bin/bash -c "
+set -e
+dracut --force --kver \$(ls /lib/modules | head -n1)
+"
+
 # --- 8) unmount buildroot virtual filesystems (prepare for cleanup) ---
 echo "[9/14] Unmounting buildroot mounts..."
 umount "$BUILDROOT/dev/pts" || true
@@ -214,30 +222,33 @@ rm -f "$ROOT"/boot/vmlinuz-* "$ROOT"/boot/initrd.img-* "$ROOT"/boot/initramfs-*
 # -------------------------
 # 5. Build OSTree repo
 # -------------------------
+echo "Building OSTree repo and commit"
 mkdir -p "$MOUNTPOINT/ostree/repo"
+echo "initializing ostree"
 ostree --repo="$MOUNTPOINT/ostree/repo" init --mode=archive-z2
 
+echo "commiting the first commit"
 # Commit buildroot to OSTree
-chroot "$BUILDROOT" /bin/bash -c "
-ostree --repo=$MOUNTPOINT/ostree/repo commit \
-       --branch=$OS_NAME/$BRANCH_NAME \
-       --subject='Initial Debian base' /
-"
+ostree --repo="$OSTREE_REPO" commit --branch="$BRANCH_NAME" \
+      --subject="Debian sid snapshot $(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+      "$BUILDROOT"
 
 # -------------------------
 # 6. Deploy OSTree
 # -------------------------
 
+echo "os-init"
 mkdir $MOUNTPOINT/ostree/deploy
 ostree admin --sysroot="$MOUNTPOINT" os-init "$OS_NAME"
 
-ostree admin --sysroot="$MOUNTPOINT" deploy --os="$OS_NAME" "$OS_NAME/$BRANCH_NAME"
+echo "deploying"
+ostree admin --sysroot="$MOUNTPOINT" deploy --os="$OS_NAME" "$BRANCH_NAME"
 
 # -------------------------
 # 7. Generate initramfs using dracut
 # -------------------------
-KVER=$(ls "$BUILDROOT/lib/modules" | head -n1)
-chroot "$BUILDROOT" /bin/bash -c "dracut --force --kver '$KVER' --add ostree"
+#KVER=$(ls "$BUILDROOT/lib/modules" | head -n1)
+#chroot "$BUILDROOT" /bin/bash -c "dracut --force --kver '$KVER' --add ostree"
 
 # -------------------------
 # 8. Install systemd-boot
