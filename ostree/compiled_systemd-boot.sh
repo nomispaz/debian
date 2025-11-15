@@ -132,14 +132,7 @@ echo "[9/14] Installing systemd-boot into the ESP (bootctl)..."
 # ensure loader directories exist on ESP
 mkdir -p "$MOUNTPOINT/boot/efi/loader/entries"
 # use bootctl to install the bootloader files into the ESP; bootctl --root expects the root that contains /boot
-bootctl --root="$MOUNTPOINT" --esp-path="$MOUNTPOINT/boot/efi" install
-
-# *** FIX: ensure boot/loader is a symlink to efi/loader (required by ostree admin) ***
-# remove any real directory that bootctl may have created and replace with symlink
-if [[ -e "$MOUNTPOINT/boot/loader" ]]; then
-  rm -rf "$MOUNTPOINT/boot/loader"
-fi
-ln -s efi/loader "$MOUNTPOINT/boot/loader"
+bootctl --esp-path=$MOUNTPOINT/boot/efi install
 
 # --- 8) unmount buildroot virtual filesystems (prepare for cleanup) ---
 echo "[10/14] Unmounting buildroot mounts..."
@@ -225,6 +218,7 @@ ostree --repo="$OSTREE_REPO" commit --branch="$BRANCH_NAME" \
 echo "[15/15] Initializing sysroot, stateroot and deploying..."
 # Ensure ostree deploy directories exist (os-init will create the stateroot)
 mkdir -p "$MOUNTPOINT/ostree/deploy"
+ostree admin init-fs $MOUNTPOINT/ostree/deploy
 ostree admin --sysroot="$MOUNTPOINT" os-init "$OS_NAME"
 ostree admin --sysroot="$MOUNTPOINT" deploy --os="$OS_NAME" "$BRANCH_NAME"
 
