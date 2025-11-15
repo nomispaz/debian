@@ -64,7 +64,7 @@ mkdir -p "$BUILDROOT"
 
 # ensure host has the tools to create the buildroot
 apt-get update
-apt-get install -y debootstrap ostree dracut
+apt-get install -y debootstrap ostree dracut systemd-boot
 
 debootstrap --variant=minbase sid "$BUILDROOT" "$DEBIAN_MIRROR"
 
@@ -104,17 +104,17 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt update
 # install kernel, dracut and basic tools; you can add packages here
-apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg
+apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg systemd-boot
 # grub/systemd-boot packages are not necessary inside buildroot for OSTree
 "
 
 # create dracut ostree module dir and fetch upstream files
 mkdir -p "$BUILDROOT/usr/lib/dracut/modules.d/98ostree"
 wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" \
-     https://raw.githubusercontent.com/ostreedev/ostree/main/dracut/module-setup.sh
+     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/module-setup.sh
 
 wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" \
-     https://raw.githubusercontent.com/ostreedev/ostree/main/dracut/ostree.conf
+     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/ostree.conf
 
 chmod 755 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" || true
 chmod 644 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" || true
