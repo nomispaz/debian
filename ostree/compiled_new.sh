@@ -226,7 +226,11 @@ fi
 
 # 2) Locate deployed OSTree revision
 DEPLOY_BASE="$MOUNTPOINT/ostree/deploy/$OS_NAME/deploy"
-DEPLOY_REV=$(basename "$(find "$DEPLOY_BASE" -maxdepth 1 -type d | grep -v '\.$' | head -n1)")
+DEPLOY_REV=$(find "$DEPLOY_BASE" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %f\n' \
+            | sort -n -r \
+            | head -n1 \
+            | awk '{print $2}')
+
 if [[ -z "$DEPLOY_REV" ]]; then
     echo "ERROR: Could not detect deployed OSTree revision"
     exit 1
@@ -251,8 +255,11 @@ set timeout=5
 menuentry "Debian (OSTree)" {
     search --no-floppy --fs-uuid --set=root $ROOT_UUID
 
-    linux $KERNEL_PATH ostree=/ostree/boot.0 root=UUID=$ROOT_UUID
-    initrd $INITRD_PATH
+    linux /ostree/deploy/$OS_NAME/deploy/$DEPLOY_REV/usr/lib/modules/$KVER/vmlinuz \
+          ostree=/ostree/boot.0 \
+          rw
+
+    initrd /ostree/deploy/$OS_NAME/deploy/$DEPLOY_REV/usr/lib/modules/$KVER/initramfs.img
 }
 EOF
 
