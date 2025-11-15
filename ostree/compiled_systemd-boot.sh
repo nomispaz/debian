@@ -109,22 +109,22 @@ apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg syste
 "
 
 # create dracut ostree module dir and fetch upstream files
-#mkdir -p "$BUILDROOT/usr/lib/dracut/modules.d/98ostree"
-#wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" \
-#     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/module-setup.sh
-#
-#wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" \
-#     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/ostree.conf
-#
-#chmod 755 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" || true
-#chmod 644 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" || true
+mkdir -p "$BUILDROOT/usr/lib/dracut/modules.d/98ostree"
+wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" \
+     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/module-setup.sh
+
+wget -q -O "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" \
+     https://raw.githubusercontent.com/ostreedev/ostree/main/src/boot/dracut/ostree.conf
+
+chmod 755 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/module-setup.sh" || true
+chmod 644 "$BUILDROOT/usr/lib/dracut/modules.d/98ostree/ostree.conf" || true
 
 # --- 7) run dracut inside buildroot to produce initramfs (works because kernel installed and /dev/proc mounted) ---
 echo "[8/14] Generating initramfs in buildroot (dracut)..."
 KVER=$(chroot "$BUILDROOT" bash -c "ls /lib/modules | head -n1")
 chroot "$BUILDROOT" /bin/bash -c "
 set -e
-dracut --force --kver $KVER --add ostree
+dracut --force --kver $KVER
 "
 
 # Install systemd-boot into the mounted EFI using bootctl (host)
@@ -143,12 +143,14 @@ ln -s efi/loader "$MOUNTPOINT/boot/loader"
 
 # --- 8) unmount buildroot virtual filesystems (prepare for cleanup) ---
 echo "[10/14] Unmounting buildroot mounts..."
-umount "$BUILDROOT/dev/pts" || true
-umount "$BUILDROOT/dev" || true
+umount -l "$BUILDROOT/dev/mqueue" 2>/dev/null || true
+umount -l "$BUILDROOT/dev/hugepages" 2>/dev/null || true
+umount -l "$BUILDROOT/dev/shm"    2>/dev/null || true
+umount -l "$BUILDROOT/dev/pts"    2>/dev/null || true
+umount -l "$BUILDROOT/dev"        2>/dev/null || true
 umount "$BUILDROOT/proc" || true
 umount "$BUILDROOT/sys" || true
 umount "$BUILDROOT/run" || true
-umount "$BUILDROOT/dev/shm" || true
 
 # If we mounted apt cache, unmount it after chroot
 if mountpoint -q "$BUILDROOT/var/cache/apt/archives"; then
