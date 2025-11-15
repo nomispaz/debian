@@ -45,7 +45,7 @@ ROOT_PART="${TARGET_DISK}2"
 
 # format partitions
 echo "[2/14] Formatting partitions..."
-mkfs.fat -F32 "$EFI_PART"
+mkfs.vfat -F32 "$EFI_PART"
 mkfs.${ROOT_FS_TYPE} -F "$ROOT_PART"
 
 # --- 2) mount root and EFI (ESP at /boot/efi) ---
@@ -104,7 +104,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 apt update
 # install kernel, dracut and basic tools; you can add packages here
-apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg systemd-boot ostree
+apt install -y --no-install-recommends linux-image-amd64 dracut sudo gnupg ostree
 # grub/systemd-boot packages are not necessary inside buildroot for OSTree
 "
 
@@ -132,7 +132,7 @@ echo "[9/14] Installing systemd-boot into the ESP (bootctl)..."
 # ensure loader directories exist on ESP
 mkdir -p "$MOUNTPOINT/boot/efi/loader/entries"
 # use bootctl to install the bootloader files into the ESP; bootctl --root expects the root that contains /boot
-bootctl --root="$MOUNTPOINT" install
+bootctl --root="$MOUNTPOINT" --esp-path="$MOUNTPOINT/boot/efi" install
 
 # *** FIX: ensure boot/loader is a symlink to efi/loader (required by ostree admin) ***
 # remove any real directory that bootctl may have created and replace with symlink
