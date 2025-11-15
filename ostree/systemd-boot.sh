@@ -76,7 +76,7 @@ mount --bind --mkdir /dev/pts "$BUILDROOT/dev/pts"
 mount --bind --mkdir /proc "$BUILDROOT/proc"
 mount --bind --mkdir /sys "$BUILDROOT/sys"
 mount --bind --mkdir /run "$BUILDROOT/run"
-mount --bind --mdir /dev/shm "$BUILDROOT/dev/shm"
+mount --bind --mkdir /dev/shm "$BUILDROOT/dev/shm"
 
 chroot $BUILDROOT bash -c '
 [ ! -e /dev/null ]     && mknod -m 666 /dev/null     c 1 3

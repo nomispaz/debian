@@ -54,8 +54,8 @@ echo "[3/14] Mounting target filesystems..."
 mkdir -p "$MOUNTPOINT"
 mount "$ROOT_PART" "$MOUNTPOINT"
 mkdir -p "$MOUNTPOINT/boot"
-mkdir -p "$MOUNTPOINT/boot/efi"
-mount "$EFI_PART" "$MOUNTPOINT/boot/efi"
+#mkdir -p "$MOUNTPOINT/boot/efi"
+mount "$EFI_PART" "$MOUNTPOINT/boot"
 
 # Ensure boot/grub exists
 mkdir -p "$MOUNTPOINT/boot/grub"
