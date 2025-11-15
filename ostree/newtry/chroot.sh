@@ -1,4 +1,4 @@
-apt install systmed-boot ostree debootstrap
+apt install systemd-boot ostree debootstrap
 
 bootctl install
 
