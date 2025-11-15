@@ -57,8 +57,6 @@ mount "$ROOT_PART" "$MOUNTPOINT"
 mkdir -p "$MOUNTPOINT/boot"
 mkdir -p "$MOUNTPOINT/boot/efi"
 mount "$EFI_PART" "$MOUNTPOINT/boot/efi"
-mkdir -p /boot/efi
-mount "$EFI_PART" "/boot/efi"
 
 mkdir -p "$BUILDROOT"
 
@@ -77,18 +75,6 @@ mount --bind --mkdir /dev "$BUILDROOT/dev"
 mount --bind --mkdir /dev/pts "$BUILDROOT/dev/pts"
 mount --bind --mkdir /proc "$BUILDROOT/proc"
 mount --bind --mkdir /sys "$BUILDROOT/sys"
-mount --bind --mkdir /run "$BUILDROOT/run"
-mount --bind --mkdir /dev/shm "$BUILDROOT/dev/shm"
-
-chroot $BUILDROOT bash -c '
-[ ! -e /dev/null ]     && mknod -m 666 /dev/null     c 1 3
-[ ! -e /dev/zero ]     && mknod -m 666 /dev/zero     c 1 5
-[ ! -e /dev/random ]   && mknod -m 666 /dev/random   c 1 8
-[ ! -e /dev/urandom ]  && mknod -m 666 /dev/urandom  c 1 9
-[ ! -e /dev/tty ]      && mknod -m 666 /dev/tty      c 5 0
-[ ! -e /dev/console ]  && mknod -m 600 /dev/console  c 5 1
-[ ! -e /dev/ptmx ]     && mknod -m 666 /dev/ptmx     c 5 2
-'
 
 # --- 4) prepare apt sources & copy resolv.conf so apt works in chroot ---
 echo "[5/14] Preparing apt sources and DNS for chroot..."
